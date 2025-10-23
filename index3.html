@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vista de Factura</title>
+<style>
+  body { font-family: Arial; margin: 40px; }
+  .factura { border: 2px solid #003366; padding: 20px; border-radius: 8px; }
+  h1 { color: #003366; }
+  button { margin-top: 20px; padding: 10px 15px; cursor: pointer; }
+</style>
+</head>
+<body>
+  <div class="factura">
+    <h1>Factura <span id="factura"></span></h1>
+    <p><strong>Cliente:</strong> <span id="cliente"></span></p>
+    <p><strong>Importe:</strong> $<span id="importe"></span></p>
+    <p><strong>Código QR:</strong> <span id="qr"></span></p>
+    <button onclick="window.print()">🖨️ Imprimir</button>
+  </div>
+
+<script>
+  const params = new URLSearchParams(window.location.search);
+  document.getElementById('factura').textContent = params.get('factura') || '-';
+  document.getElementById('cliente').textContent = params.get('cliente') || '-';
+  document.getElementById('importe').textContent = params.get('importe') || '-';
+  document.getElementById('qr').textContent = params.get('qr') || '-';
+</script>
+</body>
+</html>
