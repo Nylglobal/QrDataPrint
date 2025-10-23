@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Vista de Registro</title>
+<title>Detalle de Entrega</title>
 <style>
   body {
     font-family: Arial, sans-serif;
@@ -13,33 +13,72 @@
   .contenedor {
     background: white;
     border: 2px solid #003366;
-    padding: 20px;
-    border-radius: 8px;
-    max-width: 400px;
+    padding: 25px;
+    border-radius: 10px;
+    max-width: 500px;
+    margin: auto;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
   }
-  h1 { color: #003366; }
+  h1 { color: #003366; text-align: center; }
+  .dato { margin: 10px 0; }
+  .label { font-weight: bold; color: #003366; }
+  #qrcode { display: flex; justify-content: center; margin-top: 20px; }
   button {
-    margin-top: 20px;
-    padding: 10px 15px;
-    cursor: pointer;
+    display: block;
+    margin: 30px auto 0;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 6px;
     background: #003366;
     color: white;
-    border: none;
-    border-radius: 5px;
+    cursor: pointer;
   }
 </style>
 </head>
 <body>
   <div class="contenedor">
-    <h1>Detalle del Registro</h1>
-    <p><strong>ID recibido:</strong> <span id="id"></span></p>
+    <h1>Detalle de Entrega</h1>
+    <div class="dato"><span class="label">ID:</span> <span id="id"></span></div>
+    <div class="dato"><span class="label">Orden de Entrega:</span> <span id="oe"></span></div>
+    <div class="dato"><span class="label">Fecha:</span> <span id="fecha"></span></div>
+    <div class="dato"><span class="label">Cliente:</span> <span id="cliente"></span></div>
+    <div id="qrcode"></div>
     <button onclick="window.print()">🖨️ Imprimir</button>
   </div>
 
+  <!-- Librería QRCode -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+
   <script>
     const params = new URLSearchParams(window.location.search);
-    const id = params.get('id');
-    document.getElementById('id').textContent = id || '(sin ID)';
+    const id = params.get('id') || '-';
+    const oe = params.get('oe') || '-';
+    const fecha = decodeURIComponent(params.get('fecha') || '-');
+    const cliente = decodeURIComponent(params.get('cliente') || '-');
+    const qrValue = decodeURIComponent(params.get('qr') || '-');
+
+    document.getElementById('id').textContent = id;
+    document.getElementById('oe').textContent = oe;
+    document.getElementById('fecha').textContent = fecha;
+    document.getElementById('cliente').textContent = cliente;
+
+    // Si QR es una URL, la muestra como imagen
+    if (qrValue.startsWith('http')) {
+      const img = document.createElement('img');
+      img.src = qrValue;
+      img.style.width = '200px';
+      img.style.height = '200px';
+      img.alt = 'Código QR';
+      document.getElementById('qrcode').appendChild(img);
+    } else {
+      // Si es texto, genera un QR
+      new QRCode(document.getElementById("qrcode"), {
+        text: qrValue,
+        width: 200,
+        height: 200
+      });
+    }
   </script>
 </body>
 </html>
